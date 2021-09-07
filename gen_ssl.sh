@@ -59,5 +59,4 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
                 -c ${our_name} \
                 -a \
                 -Z
-else
 fi
