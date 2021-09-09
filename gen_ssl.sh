@@ -14,6 +14,9 @@ org=Out\ Systems
 org_unit=IT
 canon_name=k0s.local
 
+mkdir ${our_name}
+cd ${our_name}
+
 openssl genrsa \
   -passout pass:x \
   -out ${our_passkey} \
@@ -60,3 +63,5 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
                 -a \
                 -Z
 fi
+
+cd -
