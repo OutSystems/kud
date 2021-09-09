@@ -8,7 +8,6 @@ our_passkey=${our_name}.pass.key
 our_csr=${our_name}.csr
 
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
-        # remove
         sudo rm /usr/share/ca-certificates/extra/${our_crt}
         sudo dpkg-reconfigure ca-certificates
         grep extra /etc/ca-certificates.conf
@@ -22,8 +21,4 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
           -c ${our_name}
 fi
 
-rm \
-  ${our_crt} \
-  ${our_passkey} \
-  ${our_csr} \
-  ${our_key}
+rm -rf ${our_name} 
