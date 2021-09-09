@@ -2,7 +2,6 @@
 
 name=${1}
 our_name=${name}
-#our_name=${name}-$(date +%s)
 our_crt=${our_name}.crt
 our_key=${our_name}.key
 our_passkey=${our_name}.pass.key
@@ -15,8 +14,10 @@ org=Out\ Systems
 org_unit=IT
 canon_name=k0s.local
 
+mkdir ${our_name}
+cd ${our_name}
+
 openssl genrsa \
-  -des3 \
   -passout pass:x \
   -out ${our_passkey} \
   2048 \
@@ -44,14 +45,23 @@ openssl x509 \
   -out ${our_crt} \
   &> /dev/null
 
-sudo security add-trusted-cert \
-  -d \
-  -r trustRoot \
-  -k /Library/Keychains/System.keychain \
-  ./${our_crt}
+if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+        # add
+        sudo mkdir -p /usr/share/ca-certificates/extra
+        sudo cp ${our_crt} /usr/share/ca-certificates/extra
+        sudo dpkg-reconfigure ca-certificates
+        grep extra /etc/ca-certificates.conf
+        sudo update-ca-certificates
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+        sudo security add-trusted-cert \
+                -d \
+                -r trustRoot \
+                -k /Library/Keychains/System.keychain \
+                ./${our_crt}
+        sudo security find-certificate \
+                -c ${our_name} \
+                -a \
+                -Z
+fi
 
-sudo security find-certificate \
-  -c ${canon_name} \
-  -a \
-  -Z 
-
+cd -
